@@ -1,3 +1,7 @@
+Install PostgreSQL
+
+		https://www.digitalocean.com/community/tutorials/how-to-use-postgresql-with-your-django-application-on-ubuntu-14-04
+
 Create virtual environment
 
 		$ python3 -m venv ~/.virtualenvs/revugle
