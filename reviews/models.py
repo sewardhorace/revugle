@@ -1,13 +1,19 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-'''
 class Critic(models.Model):
-	user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.get_full_name()
 
 class Group(models.Model):
     name = models.CharField(max_length=32, unique=True)
-    owner = models.ForeignKey(Critic, on_delete=models.CASCADE)
+    owner = models.ForeignKey(
+        Critic, 
+        related_name="owned_groups",
+        on_delete=models.CASCADE,
+    )
     members = models.ManyToManyField(Critic)
     slug = models.SlugField()
 
@@ -33,7 +39,7 @@ class Review(models.Model):
     PLACES = 'PLAC'
     PRODUCTS = 'PROD'
     OTHER = 'OTHE'
-   	CATEGORY_CHOICES = (
+    CATEGORY_CHOICES = (
         (MOVIES, 'Movies'),
         (TV, 'TV'),
         (MUSIC, 'Music'),
@@ -66,4 +72,3 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.text
-'''
