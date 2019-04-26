@@ -6,9 +6,12 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
+from .models import Critic, Group, Review, Comment
+
 #@login_required(login_url='/')
 def home(request):
-    context = {}
+    reviews = Review.objects.order_by('-date')[:10]
+    context = {'reviews': reviews}
     return render(request, 'reviews/home.html', context)
 
 def logout(request):
