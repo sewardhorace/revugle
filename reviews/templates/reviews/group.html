@@ -1,11 +1,15 @@
-
 {% extends 'reviews/base.html' %}
 
 {% block content %}
 
   <h3>
-  	  Recent reviews:
+    {{ group.name }} | 
+      {% with total=group.members.count %}
+        {{ total }} member{{ total|pluralize }}
+      {% endwith %}
   </h3>
+
+  {% include "reviews/group_member_form.html" %}
 
   {% if reviews %}
 
@@ -17,15 +21,14 @@
         <h5><a href="{% url 'review' review.id %}">{{ review.title }}</a></h5>
         <span>{{ review.get_category_display }} | {{ review.subject }}</span>
         <br>
-        <span>by <a href="{% url 'critic' review.author.id %}">{{ review.author }}</a> in <a href="{% url 'group' review.group.id %}">{{ review.group }}</a> | {{ review.date }}</span>
+        <span>by <a href="{% url 'critic' review.author.id %}">{{ review.author }}</a> | {{ review.date }}</span>
       </li>
     {% endfor %}
 
     </ul>
 
   {% else %}
-    <p>No reviews</p>
+    <p>No reviews yet</p>
   {% endif %}
 
 {% endblock %}
-

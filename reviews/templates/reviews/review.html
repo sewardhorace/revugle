@@ -1,0 +1,38 @@
+
+{% extends 'reviews/base.html' %}
+
+{% block content %}
+
+  <img src="{{ review.img_url }}" alt="Review Img"> 
+  <h5>
+  	{{ review.title }}
+  </h5>
+  <span>{{ review.get_category_display }} | {{ review.subject }}</span>
+  <br>
+  <span>by <a href="{% url 'critic' review.author.id %}">{{ review.author }}</a> in <a href="{% url 'group' review.group.id %}">{{ review.group }}</a> | {{ review.date }}</span>
+
+  <pre>
+    {{ review.text }}
+  </pre>
+
+  {% if comments %}
+
+    <ul>
+
+    {% for comment in comments %}
+      <li>
+        <pre>{{ comment.text }}</pre>
+    	<span><a href="{% url 'critic' review.author.id %}">{{ comment.author }}</a> | {{ comment.date }}</span>
+      </li>
+    {% endfor %}
+
+    </ul>
+
+  {% else %}
+    <p>No comments yet...</p>
+  {% endif %}
+
+  {% include "reviews/comment_form.html" %}
+
+{% endblock %}
+

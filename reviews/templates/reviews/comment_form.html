@@ -1,0 +1,15 @@
+
+
+{% block comment_form %}
+  
+  {% if user and not user.is_anonymous %}
+    <form action="{% url 'create-comment' review.id %}" method="post">
+      {% csrf_token %}
+  	  {{ form }}
+      <input type="submit" value="Comment">
+    </form>
+  {% else %}
+    <a class="nav-link" href="{% url 'social:begin' 'twitter' %}?next={{ request.path }}">Login with Twitter to comment</a>
+  {% endif %} 
+
+{% endblock %}

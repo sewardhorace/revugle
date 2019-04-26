@@ -15,7 +15,7 @@ class Group(models.Model):
         on_delete=models.CASCADE,
     )
     members = models.ManyToManyField(Critic)
-    slug = models.SlugField()
+    slug = models.SlugField(blank=True)
 
     def __str__(self):
         return self.name
@@ -25,11 +25,11 @@ class Review(models.Model):
     author = models.ForeignKey(Critic, on_delete=models.CASCADE)
     subject = models.CharField(max_length=64)
     title = models.CharField(max_length=64)
-    img_url = models.URLField()
+    img_url = models.URLField(blank=True)
     text = models.TextField()
     score = models.IntegerField(default=0)
     date = models.DateTimeField(auto_now_add=True)
-    slug = models.SlugField()
+    slug = models.SlugField(blank=True)
     private = models.BooleanField(default=False)
 
     MOVIES = 'MOVI'

@@ -1,0 +1,31 @@
+
+{% extends 'reviews/base.html' %}
+
+{% block content %}
+
+  {% include "reviews/group_form.html" %}
+
+  <h3>
+  	  Browse Groups:
+  </h3>
+
+  {% if groups %}
+
+    <ul>
+
+    {% for group in groups %}
+      <li>
+      	<a href="{% url 'group' group.id %}">{{ group.name }}</a> | 
+        {% with total=group.members.count %}
+          {{ total }} member{{ total|pluralize }}
+        {% endwith %}
+      </li>
+    {% endfor %}
+
+    </ul>
+
+  {% else %}
+    <p>No groups yet :(</p>
+  {% endif %}
+
+{% endblock %}
