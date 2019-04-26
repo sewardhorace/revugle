@@ -19,8 +19,6 @@ from reviews import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('reviews/', include('reviews.urls')),
-    path('', include('social_django.urls', namespace='social')),
-    re_path(r'^home/$', views.home),
-    re_path(r'^logout/$', views.logout),
+    path('', include('reviews.urls')),
+    path('auth/', include('social_django.urls', namespace='social')),
 ]

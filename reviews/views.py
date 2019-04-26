@@ -4,25 +4,16 @@ from django.contrib.auth.decorators import login_required
 
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-
-def index(request):
-	return HttpResponse("Hello, world. You're at the reviews index.")
-
-def login(request):
-    template = loader.get_template('reviews/login.html')
-    context = {}
-    return render(request, 'reviews/login.html', context)
+from django.urls import reverse
 
 #@login_required(login_url='/')
 def home(request):
-    template = loader.get_template('reviews/home.html')
     context = {}
     return render(request, 'reviews/home.html', context)
 
-
 def logout(request):
     auth_logout(request)
-    return HttpResponseRedirect('/home/')
+    return HttpResponseRedirect(reverse('home'))
 
 
 '''
