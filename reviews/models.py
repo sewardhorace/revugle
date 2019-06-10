@@ -35,6 +35,7 @@ class Review(models.Model):
     MOVIES = 'MOVI'
     TV = 'TV'
     MUSIC = 'MUSI'
+    BOOKS = 'BOOK'
     EVENTS = 'EVEN'
     PLACES = 'PLAC'
     PRODUCTS = 'PROD'
@@ -43,6 +44,7 @@ class Review(models.Model):
         (MOVIES, 'Movies'),
         (TV, 'TV'),
         (MUSIC, 'Music'),
+        (BOOKS, 'Books'),
         (EVENTS, 'Events'),
         (PLACES, 'Places'),
         (PRODUCTS, 'Products'),
