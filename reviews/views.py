@@ -6,8 +6,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
-from .forms import GroupForm, ReviewForm, CommentForm
-from .models import Critic, Group, Review, Comment
+from .forms import ReviewForm, CommentForm
+from .models import Critic, Review, Comment
 
 
 def home(request):
@@ -30,7 +30,6 @@ def review_form(request):
 @login_required
 def create_review(request):
     review = Review(
-        group=Group.objects.get(pk=request.POST['group']), 
         author=request.user.critic, 
         subject=request.POST['subject'], 
         title=request.POST['title'],
@@ -54,44 +53,6 @@ def critic(request, critic_id):
     reviews = Review.objects.filter(author=critic_id).order_by('-date')[:10]
     context = {'critic': critic, 'reviews': reviews}
     return render(request, 'reviews/critic.html', context)
-
-def groups(request):
-    groups = Group.objects.all()
-    form = GroupForm()
-    context = {'groups': groups, 'form': form}
-    return render(request, 'reviews/groups.html', context)
-
-def group(request, group_id):
-    group = get_object_or_404(Group, pk=group_id)
-    reviews = Review.objects.filter(group=group_id).order_by('-date')[:10]
-    context = {'group': group, 'reviews': reviews}
-    return render(request, 'reviews/group.html', context)
-
-@login_required
-def create_group(request):
-    critic = request.user.critic
-    group = Group(
-        name=request.POST['name'], 
-        owner=critic)
-    group.save()
-    group.members.add(critic)
-    return HttpResponseRedirect(reverse('group', args=(group.id,)))
-
-@login_required
-def manage_membership(request, group_id):
-
-    critic = request.user.critic
-    group = Group.objects.get(pk=group_id)
-
-    if critic == group.owner:
-        group.delete()
-        return HttpResponseRedirect(reverse('groups'))
-    elif critic in group.members.all():
-        group.members.remove(critic)
-    else:
-        group.members.add(critic)
-
-    return HttpResponseRedirect(reverse('group', args=(group_id,)))
 
 def logout(request):
     auth_logout(request)

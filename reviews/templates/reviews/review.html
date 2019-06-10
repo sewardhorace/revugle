@@ -9,7 +9,7 @@
   </h5>
   <span>{{ review.get_category_display }} | {{ review.subject }}</span>
   <br>
-  <span>by <a href="{% url 'critic' review.author.id %}">{{ review.author }}</a> in <a href="{% url 'group' review.group.id %}">{{ review.group }}</a> | {{ review.date }}</span>
+  <span>by <a href="{% url 'critic' review.author.id %}">{{ review.author }}</a> | {{ review.date }}</span>
 
   <pre>
     {{ review.text }}

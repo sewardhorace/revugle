@@ -16,7 +16,7 @@
         <h5><a href="{% url 'review' review.id %}">{{ review.title }}</a></h5>
         <span>{{ review.get_category_display }} | {{ review.subject }}</span>
         <br>
-        <span>in <a href="{% url 'group' review.group.id %}">{{ review.group }}</a> | {{ review.date }}</span>
+        <span>{{ review.date }}</span>
       </li>
     {% endfor %}
 

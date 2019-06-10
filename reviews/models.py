@@ -7,21 +7,7 @@ class Critic(models.Model):
     def __str__(self):
         return self.user.get_full_name()
 
-class Group(models.Model):
-    name = models.CharField(max_length=32, unique=True)
-    owner = models.ForeignKey(
-        Critic, 
-        related_name="owned_groups",
-        on_delete=models.CASCADE,
-    )
-    members = models.ManyToManyField(Critic)
-    slug = models.SlugField(blank=True)
-
-    def __str__(self):
-        return self.name
-
 class Review(models.Model):
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
     author = models.ForeignKey(Critic, on_delete=models.CASCADE)
     subject = models.CharField(max_length=64)
     title = models.CharField(max_length=64)
