@@ -2,7 +2,7 @@
 
 {% block content %}
 
-  <h3>
+  <h3 class="header">
   	  Reviews by {{ critic }}:
   </h3>
 
@@ -11,13 +11,7 @@
     <ul>
 
     {% for review in reviews %}
-      <li>
-        <img src="{{ review.img_url }}" alt="Review Img" height="40" width="40"> 
-        <h5><a href="{% url 'review' review.id %}">{{ review.title }}</a></h5>
-        <span>{{ review.get_category_display }} | {{ review.subject }}</span>
-        <br>
-        <span>{{ review.date }}</span>
-      </li>
+      {% include "reviews/review_snippet.html" %}
     {% endfor %}
 
     </ul>

@@ -1,0 +1,13 @@
+
+<li class="review-snippet">
+  <h5><a href="{% url 'review' review.id %}">{{ review.title }}</a></h5>
+  <span>{{ review.subject }} | {{ review.get_category_display }}</span>
+  <br>
+  <span>by <a href="{% url 'critic' review.author.id %}">{{ review.author }}</a> | {{ review.date }}</span>
+
+  {% if user and not user.is_anonymous and user.critic == review.author %}
+    <br>
+    {% include "reviews/author_options.html" %}
+  {% endif %}
+
+</li>

@@ -1,0 +1,9 @@
+ 
+ <span class="author-options">
+    <a href="{% url 'update-review' review.id %}">Edit</a> | 
+
+    <form action="{% url 'delete-review' review.id %}" method="post">
+    {% csrf_token %}
+        <input type="submit" value="Delete">
+    </form>
+ </span>

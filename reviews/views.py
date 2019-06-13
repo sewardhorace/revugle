@@ -2,11 +2,11 @@
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
-from .forms import ReviewForm, CommentForm
+from .forms import ReviewForm, DeleteReviewForm, CommentForm
 from .models import Critic, Review, Comment
 
 
@@ -22,22 +22,48 @@ def review(request, review_id):
     context = {'review': review, 'comments': comments, 'form': form}
     return render(request, 'reviews/review.html', context)
 
-def review_form(request):
-    form = ReviewForm()
-    context = {'form': form}
-    return render(request, 'reviews/review_form.html', context)
-
 @login_required
 def create_review(request):
-    review = Review(
-        author=request.user.critic, 
-        subject=request.POST['subject'], 
-        title=request.POST['title'],
-        img_url=request.POST['img_url'],
-        text=request.POST['text'],
-        category=request.POST['category'])
-    review.save()
-    return HttpResponseRedirect(reverse('review', args=(review.id,)))
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.author = request.user.critic
+            review.save()
+            return HttpResponseRedirect(reverse('review', args=(review.id,)))
+    else:
+        form = ReviewForm()
+        context = {'form': form}
+    return render(request, 'reviews/create_review_form.html', context)
+
+@login_required
+def update_review(request, review_id):
+    review = get_object_or_404(Review, pk=review_id)
+    if not request.user.critic == review.author:
+        return HttpResponseForbidden();
+    if request.method == 'POST':
+        form = ReviewForm(request.POST, instance=review)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('review', args=(review_id,)))
+    else:   
+        form = ReviewForm(instance=review)
+        context = {'form': form, 'review_id':review_id}
+    return render(request, 'reviews/update_review_form.html', context)
+
+@login_required
+def delete_review(request, review_id):
+    critic = request.user.critic
+    review = get_object_or_404(Review, pk=review_id)
+    if not critic == review.author:
+        return HttpResponseForbidden();
+    if request.method == 'POST':
+        form = DeleteReviewForm(request.POST, instance=review)
+        if form.is_valid():
+            review.delete()
+            return HttpResponseRedirect(reverse('critic', args=(critic.id,)))
+    else:   
+        return HttpResponseRedirect(reverse('review', args=(review_id,)))
 
 @login_required
 def create_comment(request, review_id):

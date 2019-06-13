@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.forms',#for markdownx custom widget
     'social_django',
+    'markdownx',
     'reviews',
 ]
 
@@ -58,7 +60,7 @@ ROOT_URLCONF = 'revugle.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR, 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -162,3 +164,7 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.user.user_details',
     'reviews.pipeline.create_critic',
 )
+
+
+#markdownx settings
+FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'

@@ -1,5 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.safestring import mark_safe
+
+from markdownx.models import MarkdownxField
+from markdownx.utils import markdownify
 
 class Critic(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -11,13 +15,13 @@ class Review(models.Model):
     author = models.ForeignKey(Critic, on_delete=models.CASCADE)
     subject = models.CharField(max_length=64)
     title = models.CharField(max_length=64)
-    img_url = models.URLField(blank=True)
-    text = models.TextField()
+    text = MarkdownxField()
     score = models.IntegerField(default=0)
     date = models.DateTimeField(auto_now_add=True)
     slug = models.SlugField(blank=True)
     private = models.BooleanField(default=False)
 
+    HELPTEXT = ''
     MOVIES = 'MOVI'
     TV = 'TV'
     MUSIC = 'MUSI'
@@ -27,20 +31,25 @@ class Review(models.Model):
     PRODUCTS = 'PROD'
     OTHER = 'OTHE'
     CATEGORY_CHOICES = (
-        (MOVIES, 'Movies'),
-        (TV, 'TV'),
-        (MUSIC, 'Music'),
+        (HELPTEXT, '--Category--'),
         (BOOKS, 'Books'),
         (EVENTS, 'Events'),
+        (MOVIES, 'Movies'),
+        (MUSIC, 'Music'),
         (PLACES, 'Places'),
         (PRODUCTS, 'Products'),
+        (TV, 'TV'),
         (OTHER, 'Other'),
     )
     category = models.CharField(
         max_length=4,
         choices=CATEGORY_CHOICES,
-        default=OTHER,
+        default=HELPTEXT,
     )
+
+    @property
+    def formatted_text(self):
+        return mark_safe(markdownify(self.text))
 
     class Meta:
         ordering = ('date',)

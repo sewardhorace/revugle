@@ -1,0 +1,16 @@
+
+{% extends 'reviews/base.html' %}
+
+{% block content %}
+  
+  <form action="{% url 'update-review' review_id %}" method="post">
+  {% csrf_token %}
+  	{{ form }}
+    <input class="button" type="submit" value="Save Changes">
+    <button class="button"><a href="{% url 'review' review_id %}">Discard Changes</a></button>
+  </form>
+
+  
+  {{ form.media }}
+
+{% endblock %}

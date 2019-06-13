@@ -3,36 +3,56 @@
 
 {% block content %}
 
-  <img src="{{ review.img_url }}" alt="Review Img"> 
-  <h5>
-  	{{ review.title }}
-  </h5>
-  <span>{{ review.get_category_display }} | {{ review.subject }}</span>
-  <br>
-  <span>by <a href="{% url 'critic' review.author.id %}">{{ review.author }}</a> | {{ review.date }}</span>
+<div class="row">
+  <div class="col-md-12">
 
-  <pre>
-    {{ review.text }}
-  </pre>
+    <div class="review">
 
-  {% if comments %}
+      <h3 class="title">
+      	{{ review.title }}
+      </h3>
+      <span>{{ review.subject }} | {{ review.get_category_display }}</span>
+      <br>
+      <span>by <a href="{% url 'critic' review.author.id %}">{{ review.author }}</a> | {{ review.date }}</span>
 
-    <ul>
+      {% if user and not user.is_anonymous and user.critic == review.author %}
+        <br>
+        {% include "reviews/author_options.html" %}
+      {% endif %}
 
-    {% for comment in comments %}
-      <li>
-        <pre>{{ comment.text }}</pre>
-    	<span><a href="{% url 'critic' review.author.id %}">{{ comment.author }}</a> | {{ comment.date }}</span>
-      </li>
-    {% endfor %}
+      <div class="text">
+        {{ review.formatted_text }}
+      </div>
 
-    </ul>
+    </div>
 
-  {% else %}
-    <p>No comments yet...</p>
-  {% endif %}
+    <div class="comments">
 
-  {% include "reviews/comment_form.html" %}
+      <h3>Comments</h3>
+
+    {% if comments %}
+
+      <ul>
+
+      {% for comment in comments %}
+        <li class="comment">
+          <span><a href="{% url 'critic' review.author.id %}">{{ comment.author }}</a> | {{ comment.date }}</span>
+          <pre>{{ comment.text }}</pre>
+        </li>
+      {% endfor %}
+
+      </ul>
+
+    {% else %}
+      <p>No comments yet...</p>
+    {% endif %}
+
+    {% include "reviews/comment_form.html" %}
+
+    </div>
+
+  </div>
+</div>
 
 {% endblock %}
 

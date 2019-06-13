@@ -10,7 +10,7 @@
 
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
-        <link rel="stylesheet" href="{% static 'css/reviews.css' %}">
+        <link rel="stylesheet" href="{% static 'reviews/reviews.css' %}">
 
         <title>Revugle</title>
 
@@ -22,12 +22,14 @@
 
         <div class="content container">
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-0"></div>
+                <div class="col-md-12">
 
                 {% block content %}
                 {% endblock %}
 
                 </div>
+                <div class="col-md-0"></div>
             </div>
         </div>
 
