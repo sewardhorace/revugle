@@ -203,3 +203,8 @@ form label {
     height: 65px;
     padding: 8px;
 }
+
+.none-msg {
+    margin: 15px 0 10px;
+    padding-left: 1px;
+}

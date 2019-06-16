@@ -15,9 +15,10 @@ def home(request):
     context = {'reviews': reviews}
     return render(request, 'reviews/home.html', context)
 
-def review(request, review_id):
-    review = get_object_or_404(Review, pk=review_id)
-    comments = Comment.objects.filter(target=review_id).order_by('-date')
+def review(request, critic_slug, review_slug):
+    critic = get_object_or_404(Critic, slug=critic_slug)
+    review = get_object_or_404(Review, slug=review_slug, author=critic)
+    comments = Comment.objects.filter(target=review.id).order_by('-date')
     form = CommentForm()
     context = {'review': review, 'comments': comments, 'form': form}
     return render(request, 'reviews/review.html', context)
@@ -30,7 +31,7 @@ def create_review(request):
             review = form.save(commit=False)
             review.author = request.user.critic
             review.save()
-            return HttpResponseRedirect(reverse('review', args=(review.id,)))
+            return HttpResponseRedirect(reverse('review', args=(review.author.slug, review.slug,)))
     else:
         form = ReviewForm()
         context = {'form': form}
@@ -45,10 +46,10 @@ def update_review(request, review_id):
         form = ReviewForm(request.POST, instance=review)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('review', args=(review_id,)))
+            return HttpResponseRedirect(reverse('review', args=(review.author.slug, review.slug,)))
     else:   
         form = ReviewForm(instance=review)
-        context = {'form': form, 'review_id':review_id}
+        context = {'form': form, 'review':review}
     return render(request, 'reviews/update_review_form.html', context)
 
 @login_required
@@ -61,22 +62,23 @@ def delete_review(request, review_id):
         form = DeleteReviewForm(request.POST, instance=review)
         if form.is_valid():
             review.delete()
-            return HttpResponseRedirect(reverse('critic', args=(critic.id,)))
+            return HttpResponseRedirect(reverse('critic', args=(critic.slug,)))
     else:   
-        return HttpResponseRedirect(reverse('review', args=(review_id,)))
+        return HttpResponseRedirect(reverse('review', args=(review.author.slug, review.slug,)))
 
 @login_required
 def create_comment(request, review_id):
+    review = Review.objects.get(pk=review_id)
     comment = Comment(
-        target=Review.objects.get(pk=review_id), 
+        target=review, 
         author=request.user.critic, 
         text=request.POST['text'])
     comment.save()
-    return HttpResponseRedirect(reverse('review', args=(review_id,)))
+    return HttpResponseRedirect(reverse('review', args=(review.author.slug, review.slug,)))
 
-def critic(request, critic_id):
-    critic = get_object_or_404(Critic, pk=critic_id)
-    reviews = Review.objects.filter(author=critic_id).order_by('-date')[:10]
+def critic(request, critic_slug):
+    critic = get_object_or_404(Critic, slug=critic_slug)
+    reviews = Review.objects.filter(author=critic.id).order_by('-date')[:10]
     context = {'critic': critic, 'reviews': reviews}
     return render(request, 'reviews/critic.html', context)
 

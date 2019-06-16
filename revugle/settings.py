@@ -165,6 +165,7 @@ SOCIAL_AUTH_PIPELINE = (
     'reviews.pipeline.create_critic',
 )
 
+SOCIAL_AUTH_SLUGIFY_USERNAMES = True
 
 #markdownx settings
 FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'

@@ -11,7 +11,7 @@
       {% if user and not user.is_anonymous %}
 
         <li class="nav-item">
-       	  <a class="nav-link" href="{% url 'critic' user.critic.id %}">{{ user.get_full_name }}</a>
+       	  <a class="nav-link" href="{% url 'critic' user.critic.slug %}">{{ user.get_full_name }}</a>
         </li>
 
         <li class="nav-item">

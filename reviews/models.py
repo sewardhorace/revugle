@@ -1,12 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
+from django.utils.text import slugify
 
 from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
 
 class Critic(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    slug = models.SlugField()
 
     def __str__(self):
         return self.user.get_full_name()
@@ -18,7 +20,7 @@ class Review(models.Model):
     text = MarkdownxField()
     score = models.IntegerField(default=0)
     date = models.DateTimeField(auto_now_add=True)
-    slug = models.SlugField(blank=True)
+    slug = models.SlugField()
     private = models.BooleanField(default=False)
 
     HELPTEXT = ''
@@ -53,9 +55,16 @@ class Review(models.Model):
 
     class Meta:
         ordering = ('date',)
+        constraints = [
+            models.UniqueConstraint(fields=['author', 'title'], name='unique_title')
+        ]
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super().save(*args, **kwargs) 
 
 class Comment(models.Model):
     target = models.ForeignKey(Review, on_delete=models.CASCADE)
