@@ -1,5 +1,6 @@
 
 {% extends 'reviews/base.html' %}
+{% load tz %}
 
 {% block content %}
 
@@ -13,7 +14,7 @@
       </h3>
       <span>{{ review.subject }} | {{ review.get_category_display }}</span>
       <br>
-      <span>by <a href="{% url 'critic' review.author.id %}">{{ review.author }}</a> | {{ review.date }}</span>
+      <span>by <a href="{% url 'critic' review.author.id %}">{{ review.author }}</a> | {{ review.date|localtime }}</span>
 
       {% if user and not user.is_anonymous and user.critic == review.author %}
         <br>
@@ -36,7 +37,7 @@
 
       {% for comment in comments %}
         <li class="comment">
-          <span><a href="{% url 'critic' review.author.id %}">{{ comment.author }}</a> | {{ comment.date }}</span>
+          <span><a href="{% url 'critic' review.author.id %}">{{ comment.author }}</a> | {{ comment.date|localtime }}</span>
           <pre>{{ comment.text }}</pre>
         </li>
       {% endfor %}
