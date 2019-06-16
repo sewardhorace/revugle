@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.forms',#for markdownx custom widget
     'social_django',
     'markdownx',
+    'vote',
     'reviews',
 ]
 

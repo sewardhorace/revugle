@@ -12,5 +12,3 @@ urlpatterns = [
     path('reviews/<int:review_id>/comment/', views.create_comment, name='create-comment'),
     path('logout/', views.logout, name='logout'),
 ]
-
-#path('articles/<slug:title>/', views.article, name='article-detail'),
