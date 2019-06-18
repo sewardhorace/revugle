@@ -84,6 +84,17 @@ class Comment(VoteModel, models.Model):
     text = models.TextField()
     date = models.DateTimeField(auto_now_add=True)
 
+    @property
+    def score_display_text(self):
+        text = '{} thumb{} {}'
+        if self.vote_score < 0:
+            count = self.vote_score * -1
+            direction = 'down'
+        else:
+            count = self.vote_score
+            direction = 'up'
+        return text.format(count, pluralize(count), direction)
+
     class Meta:
         ordering = ('date',)
 

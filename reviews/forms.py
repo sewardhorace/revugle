@@ -23,3 +23,8 @@ class CommentForm(ModelForm):
         widgets = {
             'text': Textarea(attrs={'placeholder': 'Leave a comment...'})
         }
+
+class DeleteCommentForm(ModelForm):
+    class Meta:
+        model = Comment
+        fields = ()

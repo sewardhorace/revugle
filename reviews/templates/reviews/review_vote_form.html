@@ -1,0 +1,73 @@
+
+{% load vote %}
+{% load octicons %}
+
+<br>
+<span class="thumb-form">
+
+    {% if user and not user.is_anonymous %}
+
+        {% vote_exists review user 0 as upvoted %}<!--user has upvoted -->
+        {% vote_exists review user 1 as downvoted %}<!--user has downvoted -->
+
+        {% if upvoted %}
+
+        <form action="{% url 'delete-review-vote' review.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="selected">{% octicon "thumbsup" %}</button>
+        </form>
+
+        <form action="{% url 'downvote-review' review.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit">{% octicon "thumbsdown" %}</button>
+        </form>
+        
+        {% elif downvoted %}
+
+        <form action="{% url 'upvote-review' review.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit">{% octicon "thumbsup" %}</button>
+        </form>
+
+        <form action="{% url 'delete-review-vote' review.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="selected">{% octicon "thumbsdown" %}</button>
+        </form>
+
+        {% else %}
+
+        <form action="{% url 'upvote-review' review.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit">{% octicon "thumbsup" %}</button>
+        </form>
+
+        <form action="{% url 'downvote-review' review.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit">{% octicon "thumbsdown" %}</button>
+        </form>
+        
+        {% endif %}
+
+        {{ review.score_display_text }}
+
+    {% else %}
+
+    <form action="{% url 'upvote-review' review.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" disabled>{% octicon "thumbsup" %}</button>
+    </form>
+
+    <form action="{% url 'downvote-review' review.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" disabled>{% octicon "thumbsdown" %}</button>
+    </form>
+
+    {{ review.score_display_text }} - 
+
+    <a href="{% url 'social:begin' 'twitter' %}?next={{ request.path }}">Login with Twitter to vote</a>
+
+    {% endif %}
+
+</span>
+          
+      

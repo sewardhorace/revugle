@@ -33,7 +33,7 @@ a:hover {
     display: inline-block;
 }
 
-.author-options input {
+.author-options input, .comment input {
     color: #2d3599;
     text-decoration: none;
     border: none;
@@ -42,7 +42,7 @@ a:hover {
     padding: 0;
 }
 
-.author-options input:hover {
+.author-options input:hover, .comment input:hover {
     color: #4047a2;
     text-decoration: underline;
     cursor: pointer;
@@ -183,12 +183,20 @@ form label {
     padding-left: 1px;
 }
 
+.comment form {
+    margin:0;
+}
+
 .comment pre {
     background-color: white;
     padding: 8px;
     margin-top: 4px;
     margin-bottom: 5px;
     white-space: pre-wrap;
+}
+
+.comments {
+    margin-bottom: 15px;
 }
 
 .comments h3 {
@@ -207,4 +215,44 @@ form label {
 .none-msg {
     margin: 15px 0 10px;
     padding-left: 1px;
+}
+
+.thumb-form form {
+    background-color: inherit;
+    display: inline;
+    margin: 0 2px;
+}
+
+.thumb-form button{
+    background-color: inherit;
+    border: none;
+    color: inherit;
+    margin: 0;
+    padding:0;
+}
+
+.thumb-form .octicon {
+    cursor: pointer;
+}
+
+.thumb-form .selected .octicon-thumbsup {
+    color: #2d3599;
+}
+
+.thumb-form .selected .octicon-thumbsup:hover{
+    color: #4047a2;
+}
+
+.thumb-form .selected .octicon-thumbsdown {
+    color: #992c2c;
+}
+
+.thumb-form .selected .octicon-thumbsdown:hover{
+    color: #a13f3f;
+}
+
+.octicon {
+  display: inline-block;
+  vertical-align: text-top;
+  fill: currentColor;
 }
