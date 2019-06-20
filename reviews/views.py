@@ -14,13 +14,15 @@ from .models import Critic, Review, Comment
 
 
 def home(request):
-    #reviews = Review.objects.order_by('-date')[:10]
-    #context = {'reviews': reviews}
-    #follow(request.user, request.user.critic)
-    actions = user_stream(request.user)
-    context = {'actions':actions }
-    return render(request, 'reviews/user_home.html', context)
-    #return render(request, 'reviews/home.html', context)
+    if request.user.is_anonymous:
+        reviews = Review.objects.order_by('-date')[:10]
+        context = {'reviews': reviews}
+        return render(request, 'reviews/home.html', context)
+    else:
+        actions = user_stream(request.user)
+        context = {'actions':actions }
+        return render(request, 'reviews/user_home.html', context)
+    
 
 def review(request, critic_slug, review_slug):
     critic = get_object_or_404(Critic, slug=critic_slug)
