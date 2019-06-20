@@ -19,9 +19,7 @@ def home(request):
         context = {'reviews': reviews}
         return render(request, 'reviews/home.html', context)
     else:
-        actions = user_stream(request.user)
-        context = {'actions':actions }
-        return render(request, 'reviews/user_home.html', context)
+        return render(request, 'reviews/user_home.html', {})
     
 
 def review(request, critic_slug, review_slug):
@@ -40,7 +38,7 @@ def create_review(request):
             review = form.save(commit=False)
             review.author = request.user.critic
             review.save()
-            action.send(request.user, verb='posted', action_object=review)
+            action.send(request.user.critic, verb='posted', action_object=review)
             return HttpResponseRedirect(reverse('review', args=(review.author.slug, review.slug,)))
     else:
         form = ReviewForm()
@@ -107,7 +105,7 @@ def create_comment(request, review_id):
         author=request.user.critic, 
         text=request.POST['text'])
     comment.save()
-    action.send(request.user, verb='commented', action_object=comment, target=review)
+    action.send(request.user.critic, verb='commented', action_object=comment, target=review)
     return HttpResponseRedirect(reverse('review', args=(review.author.slug, review.slug,)))
 
 @login_required
@@ -153,8 +151,7 @@ def delete_comment_vote(request, comment_id):
 
 def critic(request, critic_slug):
     critic = get_object_or_404(Critic, slug=critic_slug)
-    reviews = Review.objects.filter(author=critic.id).order_by('-date')[:10]
-    context = {'critic': critic, 'reviews': reviews}
+    context = {'critic': critic}
     return render(request, 'reviews/critic.html', context)
 
 @login_required
