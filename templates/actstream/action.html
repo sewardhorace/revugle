@@ -1,0 +1,22 @@
+
+{% with critic=action.actor %}
+
+{% if action.verb == 'posted' %}
+
+  {% with review=action.action_object %}
+    {% include 'reviews/review_action.html' %}
+  {% endwith %}
+  
+{% elif action.verb == 'commented' %}
+
+  {% with review=action.target comment=action.action_object %}
+    {% include 'reviews/comment_action.html' %}
+  {% endwith %}
+
+{% else %}
+
+  <li class="action-snippet">some unknown action occurred</li>
+
+{% endif %}
+
+{% endwith %}

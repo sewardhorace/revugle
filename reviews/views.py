@@ -1,19 +1,26 @@
 
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
-
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
+
+from actstream import action
+from actstream.actions import follow, unfollow
+from actstream.models import user_stream
 
 from .forms import ReviewForm, DeleteReviewForm, CommentForm, DeleteCommentForm
 from .models import Critic, Review, Comment
 
 
 def home(request):
-    reviews = Review.objects.order_by('-date')[:10]
-    context = {'reviews': reviews}
-    return render(request, 'reviews/home.html', context)
+    #reviews = Review.objects.order_by('-date')[:10]
+    #context = {'reviews': reviews}
+    #follow(request.user, request.user.critic)
+    actions = user_stream(request.user)
+    context = {'actions':actions }
+    return render(request, 'reviews/user_home.html', context)
+    #return render(request, 'reviews/home.html', context)
 
 def review(request, critic_slug, review_slug):
     critic = get_object_or_404(Critic, slug=critic_slug)
@@ -31,6 +38,7 @@ def create_review(request):
             review = form.save(commit=False)
             review.author = request.user.critic
             review.save()
+            action.send(request.user, verb='posted', action_object=review)
             return HttpResponseRedirect(reverse('review', args=(review.author.slug, review.slug,)))
     else:
         form = ReviewForm()
@@ -97,6 +105,7 @@ def create_comment(request, review_id):
         author=request.user.critic, 
         text=request.POST['text'])
     comment.save()
+    action.send(request.user, verb='commented', action_object=comment, target=review)
     return HttpResponseRedirect(reverse('review', args=(review.author.slug, review.slug,)))
 
 @login_required
@@ -145,6 +154,20 @@ def critic(request, critic_slug):
     reviews = Review.objects.filter(author=critic.id).order_by('-date')[:10]
     context = {'critic': critic, 'reviews': reviews}
     return render(request, 'reviews/critic.html', context)
+
+@login_required
+def follow_critic(request, critic_id):
+    user = request.user
+    critic = get_object_or_404(Critic, pk=critic_id)
+    follow(user, critic)
+    return HttpResponseRedirect(reverse('critic', args=(critic.slug,)))
+
+@login_required
+def unfollow_critic(request, critic_id):
+    user = request.user
+    critic = get_object_or_404(Critic, pk=critic_id)
+    unfollow(user, critic)
+    return HttpResponseRedirect(reverse('critic', args=(critic.slug,)))
 
 def logout(request):
     auth_logout(request)

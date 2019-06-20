@@ -1,16 +1,15 @@
+
 {% extends 'reviews/base.html' %}
 
 {% load activity_tags %}
 {% block content %}
 
   <h3 class="header">
-  	{{ critic }}
+  	{{ user.get_full_name }}'s Feed:
   </h3>
 
-  {% include "reviews/follow_form.html" %}
-
   <ul class="action-feed">
-  {% activity_stream 'actor' critic %}
+  {% activity_stream 'user' user %}
   {% for action in stream %}
     {% display_action action %}
   {% endfor %}

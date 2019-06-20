@@ -170,8 +170,8 @@ form label {
 }
 
 .header {
-    font-size: 16pt;
-    margin: 12px 1px -7.5px;
+    font-size: 24pt;
+    margin: 12px 1px 0px;
 }
 
 .comment {
@@ -255,4 +255,33 @@ form label {
   display: inline-block;
   vertical-align: text-top;
   fill: currentColor;
+}
+
+.follow-form input {
+    margin-top: -10px;
+}
+
+.follow-form a {
+    margin-left: 2px;
+}
+
+.action-snippet {
+    background-color: white;
+    list-style: none;
+    padding: 15px 15px 7.5px;
+    margin: 15px 0 15px -40px;
+    border-radius: 3px;
+}
+
+.action-snippet pre {
+    padding: 8px;
+    margin: 4px 0;
+}
+
+.action-snippet span {
+    color: gray;
+}
+
+.action-snippet h5 {
+    margin: 0;
 }

@@ -22,4 +22,5 @@ urlpatterns = [
     path('', include('reviews.urls')),
     path('auth/', include('social_django.urls', namespace='social')),
     path('markdownx/', include('markdownx.urls')),
+    path('activity/', include('actstream.urls')),
 ]

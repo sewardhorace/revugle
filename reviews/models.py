@@ -4,6 +4,7 @@ from django.template.defaultfilters import pluralize
 from django.utils.safestring import mark_safe
 from django.utils.text import slugify
 
+from actstream import registry
 from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
 from vote.models import VoteModel
@@ -99,4 +100,7 @@ class Comment(VoteModel, models.Model):
         ordering = ('date',)
 
     def __str__(self):
-        return self.text
+        if len(self.text) >= 100:
+            return self.text[:97] + "..."
+        else:
+            return self.text

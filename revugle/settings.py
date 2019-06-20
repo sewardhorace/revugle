@@ -38,11 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites', #for django-activity-stream
     'django.forms',#for markdownx custom widget
     'social_django',
     'markdownx',
     'vote',
     'octicons',
+    'actstream',
     'reviews',
 ]
 
@@ -171,3 +173,7 @@ SOCIAL_AUTH_SLUGIFY_USERNAMES = True
 
 #markdownx settings
 FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
+
+
+#for django-activity-stream
+SITE_ID = 1

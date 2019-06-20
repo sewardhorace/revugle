@@ -1,0 +1,20 @@
+
+{% load activity_tags %}
+
+<div class="follow-form">
+{% if user and not user.is_anonymous %}
+  {% if request.user|is_following:user.critic %}
+    <form action="{% url 'unfollow-critic' user.critic.id %}" method="post">
+    {% csrf_token %}
+        <input class="button" type="submit" value="Unfollow">
+    </form>
+  {% else %}
+    <form action="{% url 'follow-critic' user.critic.id %}" method="post">
+    {% csrf_token %}
+        <input class="button" type="submit" value="Follow">
+    </form>
+  {% endif %}
+{% else %}
+  <a href="{% url 'social:begin' 'twitter' %}?next={{ request.path }}">Login with Twitter to follow critics</a>
+{% endif %}
+</div>

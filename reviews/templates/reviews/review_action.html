@@ -1,0 +1,9 @@
+
+{% load tz %}
+
+<li class="action-snippet">
+  <a href="{% url 'critic' critic.slug %}">{{critic}}</a> posted a review:
+  <h5><a href="{% url 'review' review.author.slug review.slug %}">{{ review.title }}</a></h5>
+  {{ review.subject }} | {{ review.get_category_display }}
+  <div>{{ review.date|localtime }}</div>
+</li>
