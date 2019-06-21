@@ -1,5 +1,7 @@
+from django.apps import apps
 from django.conf import settings
 
+from actstream.actions import follow
 from requests_oauthlib import OAuth1Session
 
 from .models import Critic
@@ -14,19 +16,15 @@ def create_critic(backend, user, response, *args, **kwargs):
             user.first_name = full_name[0]
             user.last_name = full_name[1]
             user.save()
+        
+    except Critic.DoesNotExist:
+        critic = Critic(user=user, slug=user.username)
+        critic.save()
 
-        #automatically follow twitter friends
-        '''
-        social = user.social_auth.get(provider='twitter')
-        print(social.extra_data['access_token'])
-        friends = requests.get(
-            'https://api.twitter.com/1.1/friends/list.json',
-            params={
-                'user_id': social.extra_data['access_token']['user_id']
-            }
-        )
-        print(friends.json())
-        '''
+        #automatically follow self
+        follow(user, critic)
+
+        #automatically follow twitter friends if they exist
         social = user.social_auth.get(provider='twitter')
         twitter_session = OAuth1Session(
             client_key=settings.SOCIAL_AUTH_TWITTER_KEY,
@@ -34,9 +32,15 @@ def create_critic(backend, user, response, *args, **kwargs):
             resource_owner_key=social.extra_data['access_token']['oauth_token'],
             resource_owner_secret=social.extra_data['access_token']['oauth_token_secret']
         )
-        r = twitter_session.get('https://api.twitter.com/1.1/friends/list.json')
-        print(r.json)
-        
-    except Critic.DoesNotExist:
-        critic = Critic(user=user, slug=user.username)
-        critic.save()
+        User = apps.get_app_config('auth').get_model('User')
+        next_cursor = -1
+        while next_cursor != 0:
+            r = twitter_session.get('https://api.twitter.com/1.1/friends/list.json?cursor={}&count=200'.format(next_cursor)).json()
+            next_cursor = r['next_cursor']
+            for friend in r['users']:
+                print(friend['screen_name'])
+                try:
+                    friend = User.objects.get(username=friend['screen_name'])
+                    follow(user, friend.critic)
+                except User.DoesNotExist:
+                    continue
