@@ -13,7 +13,7 @@
     <ul>
 
     {% for critic in critics %}
-    <li class="action-snippet"><a href="{% url 'critic' critic.slug %}">{{critic}}</a></li>
+    <li class="action-snippet"><a href="{% url 'critic' critic.slug %}">{{critic}}</a> | {{ critic.user.username }}</li>
     {% endfor %}
 
     </ul>
