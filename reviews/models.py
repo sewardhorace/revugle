@@ -33,11 +33,13 @@ class Review(VoteModel, models.Model):
     EVENTS = 'EVEN'
     PLACES = 'PLAC'
     PRODUCTS = 'PROD'
+    GAMES = 'GAME'
     OTHER = 'OTHE'
     CATEGORY_CHOICES = (
         (HELPTEXT, '--Category--'),
         (BOOKS, 'Books'),
         (EVENTS, 'Events'),
+        (GAMES, 'Games'),
         (MOVIES, 'Movies'),
         (MUSIC, 'Music'),
         (PLACES, 'Places'),
