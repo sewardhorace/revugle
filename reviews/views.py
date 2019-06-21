@@ -174,7 +174,7 @@ def search(request):
         query_text = request.POST['query-text']
 
         #search critics
-        search_vector = SearchVector('user__username', weight='A') + SearchVector('user__first_name', weight='A') + SearchVector('user__last_name', weight='A')
+        search_vector = SearchVector('user__username', weight='A') + SearchVector('user__first_name', weight='A') + SearchVector('user__first_name', weight='A')
         search_query = SearchQuery(query_text)
         search_rank = SearchRank(search_vector, search_query)
         critics = Critic.objects.annotate(
