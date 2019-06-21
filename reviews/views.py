@@ -1,6 +1,7 @@
 
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
@@ -167,6 +168,54 @@ def unfollow_critic(request, critic_id):
     critic = get_object_or_404(Critic, pk=critic_id)
     unfollow(user, critic)
     return HttpResponseRedirect(reverse('critic', args=(critic.slug,)))
+
+def search(request):
+    if request.method == 'POST':
+        query_text = request.POST['query-text']
+
+        #search critics
+        search_vector = SearchVector('user__username', weight='A') + SearchVector('user__first_name', weight='A') + SearchVector('user__last_name', weight='A')
+        search_query = SearchQuery(query_text)
+        search_rank = SearchRank(search_vector, search_query)
+        critics = Critic.objects.annotate(
+            rank=search_rank
+        ).filter(
+            rank__gte=0.1
+        ).order_by(
+            '-rank'
+        )
+
+        #search reviews
+        search_vector = SearchVector('title', weight='A') + SearchVector('subject', weight='B') + SearchVector('text', weight='C')
+        search_query = SearchQuery(query_text)
+        search_rank = SearchRank(search_vector, search_query)
+        reviews = Review.objects.annotate(
+            rank=search_rank
+        ).filter(
+            rank__gte=0.1
+        ).order_by(
+            '-rank'
+        )
+
+        #search comments
+        search_vector = SearchVector('text', weight='A')
+        search_query = SearchQuery(query_text)
+        search_rank = SearchRank(search_vector, search_query)
+        comments = Comment.objects.annotate(
+            rank=search_rank
+        ).filter(
+            rank__gte=0.1
+        ).order_by(
+            '-rank'
+        )
+
+        context = {
+            'critics':critics,
+            'reviews':reviews, 
+            'comments':comments
+        }
+        return render(request, 'reviews/search_results.html', context)
+    return HttpResponseRedirect(request.GET.get('next', '/'))
 
 def logout(request):
     auth_logout(request)

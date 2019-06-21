@@ -5,7 +5,7 @@
   {% if user and not user.is_anonymous %}
     <form action="{% url 'create-comment' review.id %}" method="post">
       {% csrf_token %}
-  	  {{ form }}
+      {{ form }}
       <input class="button" type="submit" value="Submit">
     </form>
   {% else %}

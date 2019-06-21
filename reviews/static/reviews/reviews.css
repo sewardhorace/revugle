@@ -285,3 +285,17 @@ form label {
 .action-snippet h5 {
     margin: 0;
 }
+
+.btn-outline-success {
+    color: white;
+    background-color: #2d3599;
+    border: none;
+}
+
+.btn-outline-success:hover {
+    background-color: #4047a2;
+}
+
+.search-results {
+    margin: 15px 0;
+}

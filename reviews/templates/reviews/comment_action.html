@@ -1,8 +1,8 @@
 {% load tz %}
 
 <li class="action-snippet">
-  <a href="{% url 'critic' critic.slug %}">{{critic}}</a> commented on 
-    <a href="{% url 'review' review.author.slug review.slug %}">{{ review.title }}</a> <span>{{ review.subject }} | {{ review.get_category_display }} </span> by <a href="{% url 'critic' review.author.slug %}">{{review.author}}</a> 
+  <a href="{% url 'critic' comment.author.slug %}">{{comment.author}}</a> commented on 
+    <a href="{% url 'review' comment.target.author.slug comment.target.slug %}">{{ comment.target.title }}</a> <span>{{ comment.target.subject }} | {{ comment.target.get_category_display }} </span> by <a href="{% url 'critic' comment.target.author.slug %}">{{comment.target.author}}</a> 
   <div>
     <pre>{{ comment }}</pre>
   </div>

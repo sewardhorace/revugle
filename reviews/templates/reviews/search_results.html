@@ -1,0 +1,63 @@
+
+{% extends 'reviews/base.html' %}
+
+{% block content %}
+
+<h3 class="header">Search results:</h3>
+
+<div class="search-results">
+
+  <h5>Critics:</h5>
+  {% if critics %}
+
+    <ul>
+
+    {% for critic in critics %}
+    <div>{{critic}}</div>
+    {% endfor %}
+
+    </ul>
+
+  {% else %}
+
+    <div class="none-msg">No critics found</div>
+  
+  {% endif %}
+
+  <h5>Reviews:</h5>
+  {% if reviews %}
+
+    <ul>
+
+    {% for review in reviews %}
+      {% include "reviews/review_snippet.html" %}
+    {% endfor %}
+
+    </ul>
+
+  {% else %}
+
+    <div class="none-msg">No reviews found</div>
+  
+  {% endif %}
+
+  
+  <h5>Comments:</h5>
+  {% if comments %}
+
+    <ul>
+
+    {% for comment in comments %}
+      {% include "reviews/comment_action.html" %}
+    {% endfor %}
+
+    </ul>
+
+  {% else %}
+
+    <div class="none-msg">No comments found</div>
+  
+  {% endif %}
+</div>
+
+{% endblock %}
