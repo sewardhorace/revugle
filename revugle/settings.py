@@ -21,10 +21,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ebao8v((im=_r+uq71sdf-4&*65+f7t+-8=fh5wve64nuk^$h%'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -150,8 +150,8 @@ AUTHENTICATION_BACKENDS = [
 
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
-SOCIAL_AUTH_TWITTER_KEY = os.environ.get('TWITTER_KEY', 'QjD7Ja1TAhUhT1NjmgGrjcYeT')
-SOCIAL_AUTH_TWITTER_SECRET = os.environ.get('TWITTER_SECRET', 'egDNH11UCFgXltCFXbqURUGYGrtRHrbkZeMqELLy7AbLWdLAB4')
+SOCIAL_AUTH_TWITTER_KEY = os.environ.get('TWITTER_KEY')
+SOCIAL_AUTH_TWITTER_SECRET = os.environ.get('TWITTER_SECRET')
 
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/home/'
 SOCIAL_AUTH_LOGIN_URL = '/'
