@@ -1,67 +1,59 @@
 
 {% extends 'reviews/base.html' %}
+{% load class_name %}
 
 {% block content %}
 
-<h3 class="header">Search results:</h3>
-
 <div class="search-results">
 
+  <h5>Search results for "{{query}}":</h5>
+
+  {% if results %}
+
+  <ul>
+
   {% for result in results %}
-  <div>{{result}}</div>
+    {% with result|class_name as klass %}
+
+      {% if klass == 'Critic' %}
+
+        {% with critic=result %}
+          <li class="action-snippet"><a href="{% url 'critic' critic.slug %}">{{critic}}</a><span style="color:gray;"> @{{ critic.user.username }}</span></li>
+        {% endwith %}
+
+      {% elif klass == 'Review' %}
+
+        {% with review=result %}
+          {% include "reviews/review_snippet.html" %}
+        {% endwith %}
+
+      {% elif klass == 'Comment' %}
+
+        {% with comment=result %}
+          {% include "reviews/comment_action.html" %}
+        {% endwith %}
+        
+      {% else %}
+
+      <li class="action-snippet">{{result}}</li>
+
+      {% endif %}
+
+    {% endwith %}
   {% endfor %}
 
-  <h5>Critics:</h5>
-  {% if critics %}
-
-    <ul>
-
-    {% for critic in critics %}
-    <li class="action-snippet"><a href="{% url 'critic' critic.slug %}">{{critic}}</a><span style="color:gray;"> @{{ critic.user.username }}</span></li>
-    {% endfor %}
-
-    </ul>
+  </ul>
 
   {% else %}
 
-    <div class="none-msg">No critics found</div>
-  
+  <div class="none-msg">No results found</div>
+
   {% endif %}
 
-  <h5>Reviews:</h5>
-  {% if reviews %}
-
-    <ul>
-
-    {% for review in reviews %}
-      {% include "reviews/review_snippet.html" %}
-    {% endfor %}
-
-    </ul>
-
-  {% else %}
-
-    <div class="none-msg">No reviews found</div>
-  
-  {% endif %}
-
-  
-  <h5>Comments:</h5>
-  {% if comments %}
-
-    <ul>
-
-    {% for comment in comments %}
-      {% include "reviews/comment_action.html" %}
-    {% endfor %}
-
-    </ul>
-
-  {% else %}
-
-    <div class="none-msg">No comments found</div>
-  
-  {% endif %}
 </div>
+
+  {% with objects=results %}
+  {% include 'reviews/pagination.html' %}
+  {% endwith %}
 
 {% endblock %}

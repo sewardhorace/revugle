@@ -19,6 +19,6 @@ urlpatterns = [
     path('comments/<int:comment_id>/upvote/', views.upvote_comment, name='upvote-comment'),
     path('comments/<int:comment_id>/downvote/', views.downvote_comment, name='downvote-comment'),
     path('comments/<int:comment_id>/delete-vote/', views.delete_comment_vote, name='delete-comment-vote'),
-    path('search/', views.search, name='search'),
+    path('search', views.search, name='search'),
     path('logout/', views.logout, name='logout'),
 ]

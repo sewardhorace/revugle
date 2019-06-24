@@ -1,4 +1,4 @@
-
+from itertools import chain
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
@@ -183,64 +183,61 @@ def unfollow_critic(request, critic_id):
 
 def search(request):
     page = request.GET.get('page')
-    #TODO: pagination
-    if request.method == 'POST':
-        query_text = request.POST['query-text']
+    query_text = request.GET.get('query')
 
-        #search critics
-        search_vector = SearchVector('user__username', 'user__first_name', 'user__last_name', weight='A')
-        search_query = SearchQuery(query_text)
-        search_rank = SearchRank(search_vector, search_query)
-        critics = Critic.objects.annotate(
-            rank=search_rank
-        ).filter(
-            rank__gte=0.1
-        ).order_by(
-            '-rank'
-        )
+    #search critics
+    search_vector = SearchVector('user__username', 'user__first_name', 'user__last_name', weight='A')
+    search_query = SearchQuery(query_text)
+    search_rank = SearchRank(search_vector, search_query)
+    critics = Critic.objects.annotate(
+        rank=search_rank
+    ).filter(
+        rank__gte=0.1
+    )
 
-        #search reviews
-        search_vector = SearchVector('title', weight='A') + SearchVector('subject', weight='B') + SearchVector('text', weight='C')
-        search_query = SearchQuery(query_text)
-        search_rank = SearchRank(search_vector, search_query)
-        reviews = Review.objects.annotate(
-            rank=search_rank
-        ).filter(
-            rank__gte=0.1
-        ).order_by(
-            '-rank'
-        )
+    #search reviews
+    search_vector = SearchVector('title', weight='A') + SearchVector('subject', weight='B') + SearchVector('text', weight='C')
+    search_query = SearchQuery(query_text)
+    search_rank = SearchRank(search_vector, search_query)
+    reviews = Review.objects.annotate(
+        rank=search_rank
+    ).filter(
+        rank__gte=0.1
+    )
 
-        #search comments
-        search_vector = SearchVector('text', weight='A')
-        search_query = SearchQuery(query_text)
-        search_rank = SearchRank(search_vector, search_query)
-        comments = Comment.objects.annotate(
-            rank=search_rank
-        ).filter(
-            rank__gte=0.1
-        ).order_by(
-            '-rank'
-        )
+    #search comments
+    search_vector = SearchVector('text', weight='A')
+    search_query = SearchQuery(query_text)
+    search_rank = SearchRank(search_vector, search_query)
+    comments = Comment.objects.annotate(
+        rank=search_rank
+    ).filter(
+        rank__gte=0.1
+    )
 
-        queryset_chain = chain(
-            critics,
-            reviews,
-            comments
-        )
-        results = sorted(
-            queryset_chain, 
-            key=lambda instance: instance.rank, 
-            reverse=True
-        )
-        context = {
-            'critics':critics,
-            'reviews':reviews, 
-            'comments':comments,
-            'results': results
-        }
-        return render(request, 'reviews/search_results.html', context)
-    return HttpResponseRedirect(request.GET.get('next', '/'))
+    #combine results
+    queryset_chain = chain(
+        critics,
+        reviews,
+        comments
+    )
+
+    #sort by rank
+    ranked_results = sorted(
+        queryset_chain, 
+        key=lambda instance: instance.rank, 
+        reverse=True
+    )
+
+    #paginate
+    paginator = Paginator(ranked_results, 25)
+    results = paginator.get_page(page)
+
+    context = {
+        'query': query_text,
+        'results': results
+    }
+    return render(request, 'reviews/search_results.html', context)
 
 def logout(request):
     auth_logout(request)
