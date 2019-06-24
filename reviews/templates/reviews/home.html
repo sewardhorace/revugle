@@ -21,5 +21,9 @@
     <div class="none-msg">No reviews yet</div>
   {% endif %}
 
+  {% with objects=reviews %}
+  {% include 'reviews/pagination.html' %}
+  {% endwith %}
+
 {% endblock %}
 

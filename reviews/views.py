@@ -2,25 +2,33 @@
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
+from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
 from actstream import action
 from actstream.actions import follow, unfollow
-from actstream.models import user_stream
+from actstream.models import actor_stream, user_stream
 
 from .forms import ReviewForm, DeleteReviewForm, CommentForm, DeleteCommentForm
 from .models import Critic, Review, Comment
 
 
 def home(request):
+    page = request.GET.get('page')
     if request.user.is_anonymous:
-        reviews = Review.objects.order_by('-date')[:10]
+        reviews_list = Review.objects.order_by('-date')
+        paginator = Paginator(reviews_list, 25)
+        reviews = paginator.get_page(page)
         context = {'reviews': reviews}
         return render(request, 'reviews/home.html', context)
     else:
-        return render(request, 'reviews/user_home.html', {})
+        action_stream = user_stream(request.user)
+        paginator = Paginator(action_stream, 25)
+        actions = paginator.get_page(page)
+        context = {'actions': actions}
+        return render(request, 'reviews/user_home.html', context)
     
 
 def review(request, critic_slug, review_slug):
@@ -31,7 +39,7 @@ def review(request, critic_slug, review_slug):
     context = {'review': review, 'comments': comments, 'form': form}
     return render(request, 'reviews/review.html', context)
 
-@login_required
+@login_required(login_url='/')
 def create_review(request):
     if request.method == 'POST':
         form = ReviewForm(request.POST)
@@ -46,7 +54,7 @@ def create_review(request):
         context = {'form': form}
     return render(request, 'reviews/create_review_form.html', context)
 
-@login_required
+@login_required(login_url='/')
 def update_review(request, review_id):
     review = get_object_or_404(Review, pk=review_id)
     if not request.user.critic == review.author:
@@ -151,8 +159,12 @@ def delete_comment_vote(request, comment_id):
     return HttpResponseRedirect(reverse('review', args=(review.author.slug, review.slug,)))
 
 def critic(request, critic_slug):
+    page = request.GET.get('page')
     critic = get_object_or_404(Critic, slug=critic_slug)
-    context = {'critic': critic}
+    action_stream = actor_stream(critic)
+    paginator = Paginator(action_stream, 25)
+    actions = paginator.get_page(page)
+    context = {'critic': critic, 'actions':actions}
     return render(request, 'reviews/critic.html', context)
 
 @login_required
@@ -170,6 +182,8 @@ def unfollow_critic(request, critic_id):
     return HttpResponseRedirect(reverse('critic', args=(critic.slug,)))
 
 def search(request):
+    page = request.GET.get('page')
+    #TODO: pagination
     if request.method == 'POST':
         query_text = request.POST['query-text']
 

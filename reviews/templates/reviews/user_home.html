@@ -9,10 +9,13 @@
   </h3>
 
   <ul class="action-feed">
-  {% activity_stream 'user' user %}
-  {% for action in stream %}
+  {% for action in actions %}
     {% display_action action %}
   {% endfor %}
   </ul>
+
+{% with objects=actions %}
+{% include 'reviews/pagination.html' %}
+{% endwith %}
 
 {% endblock %}

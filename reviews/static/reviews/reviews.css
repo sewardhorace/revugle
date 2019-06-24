@@ -169,9 +169,11 @@ form label {
     color: #4047a2;
 }
 
+
 .header {
     font-size: 24pt;
-    margin: 12px 1px -7.5px;
+    margin: 15px 1px -7.5px;
+    display: inline-block;
 }
 
 .comment {
@@ -257,12 +259,24 @@ form label {
   fill: currentColor;
 }
 
+
+.follow-form {
+   position: relative;
+   display: inline-block;
+   bottom: 8px;
+   left: 4px;
+    margin: 0;
+    margin-bottom: -7.5px;
+}
+
 .follow-form input {
-    margin-top: -4px;
+    padding: 4px 8px 2px;
 }
 
 .follow-form a {
-    margin-left: 2px;
+    position: relative;
+    bottom: -6px;
+    display: inline-block;
 }
 
 .action-snippet {
@@ -298,4 +312,10 @@ form label {
 
 .search-results {
     margin: 15px 0;
+}
+
+.pagination {
+    text-align: center;
+    display: block;
+    margin-bottom: 10px;
 }
