@@ -223,10 +223,21 @@ def search(request):
             '-rank'
         )
 
+        queryset_chain = chain(
+            critics,
+            reviews,
+            comments
+        )
+        results = sorted(
+            queryset_chain, 
+            key=lambda instance: instance.rank, 
+            reverse=True
+        )
         context = {
             'critics':critics,
             'reviews':reviews, 
-            'comments':comments
+            'comments':comments,
+            'results': results
         }
         return render(request, 'reviews/search_results.html', context)
     return HttpResponseRedirect(request.GET.get('next', '/'))

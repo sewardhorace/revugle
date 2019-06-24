@@ -7,6 +7,10 @@
 
 <div class="search-results">
 
+  {% for result in results %}
+  <div>{{result}}</div>
+  {% endfor %}
+
   <h5>Critics:</h5>
   {% if critics %}
 
