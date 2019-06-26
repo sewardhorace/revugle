@@ -27,6 +27,10 @@ a:hover {
     white-space: pre-line;
 }
 
+.review .text img {
+    max-width: 100%;
+}
+
 .author-options form {
     margin: 0;
     padding: 0;
